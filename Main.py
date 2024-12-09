@@ -6,39 +6,127 @@ cafe_data = [
     {
         "name": "cafe1",
         "distance": 0.5,
-        "price": "low",
+        "price": "$",
         "wifi": "yes",
         "sockets": "yes",
         "vegan": "yes",
         "cash_discount": "no",
         "days_opened": "[monday, tuesday, wednesday, thursday, friday]",
-        "hours_opened": "[9-17]",
+        "open_hour": 9,
+        "close_hour": 17
     }
 ]
+
+# Generate the cafes.pl file
+generate_cafes_prolog_file(cafe_data)
 
 # Initialize Prolog interface
 prolog = Prolog()
 prolog.consult("cafes.pl")
 
-# Function to display a menu and collect user inputs
 def ask_user():
+    """
+    Displays a menu to collect user preferences for finding a suitable cafe.
+    Validates user inputs for correctness.
+
+    Returns:
+        tuple: A tuple containing user inputs:
+            - max_distance (float): Maximum distance from residence in kilometers.
+            - price (str): Preferred price range ('$'/'$$'/'$$$').
+            - wifi (str): Wi-Fi requirement ('yes'/'no').
+            - sockets (str): Power socket requirement ('yes'/'no').
+            - vegan (str): Dietary requirement for vegan/vegetarian options ('yes'/'no').
+            - visit_day (str): Day of the week the user plans to visit.
+            - visit_start (int): Arrival time in 24-hour format.
+            - visit_end (int): Departure time in 24-hour format.
+    """
     print("Welcome to the Cafe Finder Expert System!")
     print("Please answer the following questions to find the best cafe for you 🍵🫖")
-    
-    max_distance = float(input("Enter maximum distance from the res (in km): "))
-    print("Price range options: $, $$, $$$")
-    price = input("Enter your preferred price range: ").strip().lower()
-    wifi = input("Do you need Wi-Fi? (yes/no): ").strip().lower()
-    sockets = input("Do you need power sockets? (yes/no): ").strip().lower()
-    vegan = input("Do you need vegan/vegetarian options? (yes/no): ").strip().lower()
-    visit_day = input("What day of the week are you visiting? (e.g., monday): ").strip().lower()
-    visit_start = int(input("Enter your arrival time (24-hour format, ex. 13 for 1 PM): "))
-    visit_end = int(input("Enter your departure time (24-hour format, ex. 15 for 3 PM): "))
-    
+
+    while True:
+        try:
+            max_distance = float(input("Enter maximum distance from the res (in km): "))
+            if max_distance < 0:
+                raise ValueError("Distance must be non-negative.")
+            break
+        except ValueError as e:
+            print(f"Invalid input: {e}. Please enter a valid distance in kilometers.")
+
+    while True:
+        price = input("Enter your preferred price range ($, $$, $$$): ").strip()
+        if price in ["$", "$$", "$$$"]:
+            break
+        else:
+            print("Invalid input. Please choose from $, $$, or $$$.")
+
+    while True:
+        wifi = input("Do you need Wi-Fi? (yes/no): ").strip().lower()
+        if wifi in ["yes", "no"]:
+            break
+        else:
+            print("Invalid input. Please enter 'yes' or 'no'.")
+
+    while True:
+        sockets = input("Do you need power sockets? (yes/no): ").strip().lower()
+        if sockets in ["yes", "no"]:
+            break
+        else:
+            print("Invalid input. Please enter 'yes' or 'no'.")
+
+    while True:
+        vegan = input("Do you need vegan/vegetarian options? (yes/no): ").strip().lower()
+        if vegan in ["yes", "no"]:
+            break
+        else:
+            print("Invalid input. Please enter 'yes' or 'no'.")
+
+    while True:
+        visit_day = input("What day of the week are you visiting? (e.g., monday): ").strip().lower()
+        if visit_day in ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"]:
+            break
+        else:
+            print("Invalid input. Please enter a valid day of the week.")
+
+    while True:
+        try:
+            visit_start = int(input("Enter your arrival time (24-hour format, e.g., 13 for 1 PM): "))
+            if 0 <= visit_start <= 24:
+                break
+            else:
+                raise ValueError("Time must be between 0 and 24.")
+        except ValueError as e:
+            print(f"Invalid input: {e}. Please enter a valid time in 24-hour format.")
+
+    while True:
+        try:
+            visit_end = int(input("Enter your departure time (24-hour format, e.g., 15 for 3 PM): "))
+            if 0 <= visit_end <= 24 and visit_end >= visit_start:
+                break
+            else:
+                raise ValueError("Time must be between 0 and 24, and later than arrival time.")
+        except ValueError as e:
+            print(f"Invalid input: {e}. Please enter a valid time in 24-hour format.")
+
     return max_distance, price, wifi, sockets, vegan, visit_day, visit_start, visit_end
 
-# Function to query the Prolog knowledge base
+
 def find_cafe(max_distance, price, wifi, sockets, vegan, visit_day, visit_start, visit_end):
+    """
+    Queries the Prolog knowledge base to find cafes that match user preferences.
+
+    Input:
+        max_distance (float): Maximum distance from residence in kilometers.
+        price (str): Preferred price range ('$'/'$$'/'$$$').
+        wifi (str): Wi-Fi requirement ('yes'/'no').
+        sockets (str): Power socket requirement ('yes'/'no').
+        vegan (str): Dietary requirement for vegan/vegetarian options ('yes'/'no').
+        visit_day (str): Day of the week the user plans to visit.
+        visit_start (int): Arrival time in 24-hour format.
+        visit_end (int): Departure time in 24-hour format.
+
+    Output:
+        resutls(list): A list of dictionaries containing matching cafes from the Prolog query.
+    """
     query = (
         f"suitable_cafe(Cafe, {max_distance}, {price}, {wifi}, {sockets}, {vegan}, "
         f"{visit_day}, {visit_start}, {visit_end})"
@@ -46,8 +134,17 @@ def find_cafe(max_distance, price, wifi, sockets, vegan, visit_day, visit_start,
     results = list(prolog.query(query))
     return results
 
-# Function to display results
+
 def display_results(results):
+    """
+    Displays the results of the Prolog query.
+
+    Input:
+        results (list): A list of dictionaries containing the cafes that match the query.
+
+    Output:
+        A list of recommended cafes or a message indicating no matches were found.
+    """
     if results:
         print("\nRecommended Cafes:")
         for cafe in results:
@@ -55,7 +152,7 @@ def display_results(results):
     else:
         print("\nNo suitable cafes found based on your preferences.")
 
-# Main execution
+
 if __name__ == "__main__":
     user_input = ask_user()
     results = find_cafe(*user_input)
