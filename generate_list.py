@@ -1,7 +1,5 @@
 def generate_cafes_prolog_file(cafe_data, output_file="cafes.pl"):
     with open(output_file, "w") as file:
-        file.write("% Automatically generated Prolog knowledge base for cafes\n\n")
-
         # Add facts
         for cafe in cafe_data:
             cafe_name = cafe["name"]
@@ -12,31 +10,17 @@ def generate_cafes_prolog_file(cafe_data, output_file="cafes.pl"):
             file.write(f"vegan({cafe_name}, {cafe['vegan']}).\n")
             file.write(f"cash_discount({cafe_name}, {cafe['cash_discount']}).\n")
             file.write(f"days_opened({cafe_name}, {cafe['days_opened']}).\n")
-            file.write(f"hours_opened({cafe_name}, {cafe['hours_opened']}).\n\n")
+            file.write(f"open_hour({cafe_name}, {cafe['open_hour']}).\n")
+            file.write(f"close_hour({cafe_name}, {cafe['close_hour']}).\n\n")
 
         # Add rules
         file.write("% Rules\n")
-        file.write("suitable_cafe(Cafe, MaxDistance, Price, Wifi, Sockets, Vegan) :-\n")
+        file.write("suitable_cafe(Cafe, MaxDistance, Price, Wifi, Sockets, Vegan, VisitDay, VisitStart, VisitEnd) :-\n")
         file.write("    distance(Cafe, D), D =< MaxDistance,\n")
         file.write("    price(Cafe, Price),\n")
         file.write("    wifi(Cafe, Wifi),\n")
         file.write("    sockets(Cafe, Sockets),\n")
-        file.write("    vegan(Cafe, Vegan).\n")
-
-# Example cafe (please remove this and add actual data!)
-cafe_data = [
-    {
-        "name": "cafe1",
-        "distance": 0.5,
-        "price": "low",
-        "wifi": "yes",
-        "sockets": "yes",
-        "vegan": "yes",
-        "cash_discount": "no",
-        "days_opened": "[monday, tuesday, wednesday, thursday, friday]",
-        "hours_opened": "[9-17]",
-    }
-]
-
-# Generate the Prolog file
-generate_cafes_prolog_file(cafe_data)
+        file.write("    vegan(Cafe, Vegan),\n")
+        file.write("    days_opened(Cafe, Days), member(VisitDay, Days),\n")
+        file.write("    open_hour(Cafe, Open), close_hour(Cafe, Close),\n")
+        file.write("    VisitStart >= Open, VisitEnd =< Close.\n")
