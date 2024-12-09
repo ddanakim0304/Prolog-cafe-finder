@@ -1,4 +1,4 @@
-# Replace this data with real ones plz!!! @Rue @Anne
+# Replace this data with cafe lists
 cafe_data = [
     {
         "name": "cafe1",
