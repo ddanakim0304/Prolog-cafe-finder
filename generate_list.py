@@ -15,12 +15,14 @@ def generate_cafes_prolog_file(cafe_data, output_file="cafes.pl"):
 
         # Add rules
         file.write("% Rules\n")
-        file.write("suitable_cafe(Cafe, MaxDistance, Price, Wifi, Sockets, Vegan, VisitDay, VisitStart, VisitEnd) :-\n")
+        file.write("suitable_cafe(Cafe, MaxDistance, Price, Wifi, Sockets, Vegan, CashDiscountPref, VisitDay, VisitStart, VisitEnd) :-\n")
         file.write("    distance(Cafe, D), D =< MaxDistance,\n")
         file.write("    price(Cafe, Price),\n")
         file.write("    wifi(Cafe, Wifi),\n")
         file.write("    sockets(Cafe, Sockets),\n")
         file.write("    vegan(Cafe, Vegan),\n")
+        # If cash discount preference is yes, filter for cash discount; otherwise, include all
+        file.write("    (CashDiscountPref = yes -> cash_discount(Cafe, yes) ; true),\n")  
         file.write("    days_opened(Cafe, Days), member(VisitDay, Days),\n")
         file.write("    open_hour(Cafe, Open), close_hour(Cafe, Close),\n")
         file.write("    VisitStart >= Open, VisitEnd =< Close.\n")

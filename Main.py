@@ -36,6 +36,7 @@ def ask_user():
             - wifi (str): Wi-Fi requirement ('yes'/'no').
             - sockets (str): Power socket requirement ('yes'/'no').
             - vegan (str): Dietary requirement for vegan/vegetarian options ('yes'/'no').
+            - cash_discount (str): Preference for cafes with cash discounts ('yes'/'no').
             - visit_day (str): Day of the week the user plans to visit.
             - visit_start (int): Arrival time in 24-hour format.
             - visit_end (int): Departure time in 24-hour format.
@@ -81,6 +82,13 @@ def ask_user():
             print("Invalid input. Please enter 'yes' or 'no'.")
 
     while True:
+        cash_discount = input("Do you prefer cafes with cash discounts? (yes/no): ").strip().lower()
+        if cash_discount in ["yes", "no"]:
+            break
+        else:
+            print("Invalid input. Please enter 'yes' or 'no'.")
+
+    while True:
         visit_day = input("What day of the week are you visiting? (e.g., monday): ").strip().lower()
         if visit_day in ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"]:
             break
@@ -107,29 +115,30 @@ def ask_user():
         except ValueError as e:
             print(f"Invalid input: {e}. Please enter a valid time in 24-hour format.")
 
-    return max_distance, price, wifi, sockets, vegan, visit_day, visit_start, visit_end
+    return max_distance, price, wifi, sockets, vegan, cash_discount, visit_day, visit_start, visit_end
 
 
-def find_cafe(max_distance, price, wifi, sockets, vegan, visit_day, visit_start, visit_end):
+def find_cafe(max_distance, price, wifi, sockets, vegan, cash_discount, visit_day, visit_start, visit_end):
     """
     Queries the Prolog knowledge base to find cafes that match user preferences.
 
-    Input:
+    Args:
         max_distance (float): Maximum distance from residence in kilometers.
         price (str): Preferred price range ('$'/'$$'/'$$$').
         wifi (str): Wi-Fi requirement ('yes'/'no').
         sockets (str): Power socket requirement ('yes'/'no').
         vegan (str): Dietary requirement for vegan/vegetarian options ('yes'/'no').
+        cash_discount (str): Preference for cafes with cash discounts ('yes'/'no').
         visit_day (str): Day of the week the user plans to visit.
         visit_start (int): Arrival time in 24-hour format.
         visit_end (int): Departure time in 24-hour format.
 
-    Output:
-        resutls(list): A list of dictionaries containing matching cafes from the Prolog query.
+    Returns:
+        list: A list of dictionaries containing matching cafes from the Prolog query.
     """
     query = (
-        f"suitable_cafe(Cafe, {max_distance}, {price}, {wifi}, {sockets}, {vegan}, "
-        f"{visit_day}, {visit_start}, {visit_end})"
+        f"suitable_cafe(Cafe, {max_distance}, '{price}', {wifi}, {sockets}, {vegan}, "
+        f"{cash_discount}, '{visit_day}', {visit_start}, {visit_end})"
     )
     results = list(prolog.query(query))
     return results
