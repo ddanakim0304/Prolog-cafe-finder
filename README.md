@@ -1,4 +1,4 @@
-# Cafe Finder Expert System
+# Cafe Finder Expert System (CS152 Location-based assignment)
 
 **Cafe Finder Expert System** uses Python and Prolog to recommend cafes based on user preferences. The system collects user inputs such as distance, price range, Wi-Fi availability, power sockets, vegan options, cash discounts, and visiting times, and queries a Prolog knowledge base to find suitable cafes.
 
