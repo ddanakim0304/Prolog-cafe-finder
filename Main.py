@@ -146,11 +146,11 @@ def display_results(results):
         A list of recommended cafes or a message indicating no matches were found.
     """
     if results:
-        print("\nRecommended Cafes:")
+        print("\n✨ Here are some cafes you might love! ✨")
         for cafe in results:
-            print(f"- {cafe['Cafe']}")
+            print(f"🌟 {cafe['Cafe']}")
     else:
-        print("\nNo suitable cafes found based on your preferences.")
+        print("\nNo suitable cafes found based on your preferences :(")
 
 
 if __name__ == "__main__":
