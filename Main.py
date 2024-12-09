@@ -1,21 +1,6 @@
 from pyswip import Prolog
 from generate_list import generate_cafes_prolog_file
-
-# Replace this data with real ones plz!!! @Rue @Anne
-cafe_data = [
-    {
-        "name": "cafe1",
-        "distance": 0.5,
-        "price": "$",
-        "wifi": "yes",
-        "sockets": "yes",
-        "vegan": "yes",
-        "cash_discount": "no",
-        "days_opened": "[monday, tuesday, wednesday, thursday, friday]",
-        "open_hour": 9,
-        "close_hour": 17
-    }
-]
+from cafe_data import cafe_data
 
 # Generate the cafes.pl file
 generate_cafes_prolog_file(cafe_data)
