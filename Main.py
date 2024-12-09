@@ -1,7 +1,7 @@
 from pyswip import Prolog
 from generate_list import generate_cafes_prolog_file
 
-# Replace this data with real ones plz!!!
+# Replace this data with real ones plz!!! @Rue @Anne
 cafe_data = [
     {
         "name": "cafe1",
