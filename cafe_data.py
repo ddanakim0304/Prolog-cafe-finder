@@ -135,7 +135,7 @@ cafe_data = [
         "closing_hour": [20.5, 20.5, 20.5, 20.5, 20.5, 20.5, 20.5]
     },
         {
-        "name": "Trippin' Cafe",
+        "name": "Trippin Cafe",
         "address": "Maipú 944, C1006 Autonomous City of Buenos Aires",
         "public_transport_time": -1,
         "walk_time": 3,
@@ -345,7 +345,7 @@ cafe_data = [
         "closing_hour": [20, 20, 20, 20, 20, 20, 20]
     },
     {
-        "name": "OL'DAYS - Coffee & Kitchen Madero",
+        "name": "OLDAYS - Coffee & Kitchen Madero",
         "address": "Olga Cossettini 1182, C1107 Cdad. Autónoma de Buenos Aires",
         "public_transport_time": 33,
         "walk_time": 38,
