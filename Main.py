@@ -145,16 +145,24 @@ def ask_user():
 
 
 def find_cafe(transport, max_time, max_price, wifi, sockets, vegan_preference, needs_meals, visit_day, visit_start, visit_end):
-    """
-    Queries the Prolog knowledge base to find cafes that match user preferences.
-    """
     try:
         query = (
             f"suitable_cafe(Cafe, '{transport}', {max_time}, {max_price}, '{wifi}', '{sockets}', "
-            f"'{vegan_preference}', '{needs_meals}', '{visit_day}', {visit_start}, {visit_end}), "
-            f"address(Cafe, Address)"
+            f"'{vegan_preference}', '{needs_meals}', '{visit_day}', {visit_start}, {visit_end})"
         )
-        results = list(prolog.query(query))
+        cafes = list(prolog.query(query))
+
+        # Retrieve addresses for each cafe found
+        results = []
+        for cafe_result in cafes:
+            cafe_name = cafe_result["Cafe"]
+            address_query = f"address('{cafe_name}', Address)"
+            address_result = list(prolog.query(address_query))
+            if address_result:
+                # Combine the cafe_result with the address
+                combined = {**cafe_result, "Address": address_result[0]["Address"]}
+                results.append(combined)
+
         return results
     except Exception as e:
         print(f"Error querying Prolog: {e}")
@@ -177,10 +185,16 @@ def display_results(results, transport):
             transport_time = cafe.get(f"{transport}_time", -1)
 
             if transport_time == -1:
-                walk_time = cafe.get("walk_time", -1)
-                print(f"{idx}. 🌟 {name} at {address} is within walking distance. It takes approximately {walk_time} minutes on foot!")
+                walk_time_query = f"walk_time('{cafe['Cafe']}', WalkTime)"
+                walk_time_result = list(prolog.query(walk_time_query))
+                if walk_time_result:
+                    walk_time = walk_time_result[0]["WalkTime"]
+                    print(f"{idx}. 🌟 {name} at {address} is within walking distance. It takes approximately {walk_time} minutes on foot!")
+                else:
+                    print(f"{idx}. 🌟 {name} at {address} is within walking distance, but the walking time is unknown!")
             else:
                 print(f"{idx}. 🌟 {name} at {address} can be reached by {transport} in approximately {transport_time} minutes!")
+
     else:
         print("\nNo suitable cafes found based on your preferences :(")
 

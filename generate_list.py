@@ -18,9 +18,8 @@ def generate_cafes_prolog_file(cafe_data, output_file="cafes.pl"):
 
         # Populate the predicate groups
         for cafe in cafe_data:
-            cafe_name = cafe["name"].replace(" ", "_")  # Replace spaces with underscores
+            cafe_name = cafe["name"].replace(" ", "_")
             address = cafe["address"].replace(" ", "_")
-
             predicates["address"].append(f"address('{cafe_name}', '{address}').")
             predicates["public_transport_time"].append(f"public_transport_time('{cafe_name}', {cafe['public_transport_time']}).")
             predicates["walk_time"].append(f"walk_time('{cafe_name}', {cafe['walk_time']}).")
@@ -28,17 +27,13 @@ def generate_cafes_prolog_file(cafe_data, output_file="cafes.pl"):
             predicates["price_range"].append(f"price_range('{cafe_name}', {cafe['price_range'][0]}, {cafe['price_range'][1]}).")
             predicates["wifi"].append(f"wifi('{cafe_name}', '{cafe['wifi']}').")
             predicates["sockets"].append(f"sockets('{cafe_name}', '{cafe['sockets']}').")
-
             vegan_opts = "[" + ",".join(f"'{opt}'" for opt in cafe["vegan_vegetarian"]) + "]"
             predicates["vegan_options"].append(f"vegan_options('{cafe_name}', {vegan_opts}).")
             predicates["meals"].append(f"meals('{cafe_name}', '{cafe['meals']}').")
-
             days_opened = "[" + ",".join(f"'{day}'" for day in cafe["days_opened"]) + "]"
             predicates["days_opened"].append(f"days_opened('{cafe_name}', {days_opened}).")
-
             open_hours = "[" + ",".join(str(h) for h in cafe["opening_hour"]) + "]"
             predicates["open_hour"].append(f"open_hour('{cafe_name}', {open_hours}).")
-
             close_hours = "[" + ",".join(str(h) for h in cafe["closing_hour"]) + "]"
             predicates["close_hour"].append(f"close_hour('{cafe_name}', {close_hours}).")
 

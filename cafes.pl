@@ -381,8 +381,8 @@ suitable_cafe(Cafe, Transport, MaxTime, MaxPrice, Wifi, Sockets, VeganPreference
     price_range(Cafe, MinPrice, MaxPriceRange), MaxPrice >= MinPrice, MaxPrice =< MaxPriceRange,
 
     % Check wifi and sockets
-    wifi(Cafe, Wifi),
-    sockets(Cafe, Sockets),
+    (Wifi = 'no' -> true; wifi(Cafe, Wifi)),
+    (Sockets = 'no' -> true; sockets(Cafe, Sockets)),
 
     % Check vegan/vegetarian preferences
     vegan_options(Cafe, Options),
