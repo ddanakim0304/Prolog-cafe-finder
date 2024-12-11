@@ -5,7 +5,7 @@
 
 ## Algorithm Visualization
 ```mermaid
-flowchart TD
+flowchart LR
     %% WiFi Check
     B[Collect User Preferences] --> C[Check WiFi Requirement]
     C -->|User Input = no| D[Check Socket Requirement]
