@@ -2,6 +2,31 @@
 
 **Cafe Finder Expert System** uses Python and Prolog to recommend cafes based on user preferences. The system collects user inputs such as distance, price range, Wi-Fi availability, power sockets, vegan options, meals, and visiting times, and queries a Prolog knowledge base to find suitable cafes.
 
+
+## Algorithm Visualization
+```mermaid
+flowchart LR
+    A[Begin Evaluation] --> B{Select Travel Mode}
+    B -->|Public Transport / Taxi| C{Within Walking Distance?}
+    B -->|Walk| D{Check Travel Time}
+    C -->|Yes| E{Check Price Range}
+    C -->|No| D
+    D -->|Within Time Limit| E
+    D -->|Over Time Limit| F[Not Suitable]
+    E -->|Within Budget| G{WiFi & Sockets?}
+    E -->|Over Budget| F
+    G -->|Available| H{Dietary Options?}
+    G -->|Not Available| F
+    H -->|Matches| I{Meal Service?}
+    H -->|No Match| F
+    I -->|Available| J{Opening Hours?}
+    I -->|Not Available| F
+    J -->|Open| K[Suitable Café]
+    J -->|Closed| F
+
+```
+
+
 ## Features
 - Collects user preferences through a simple interactive menu.
 - Uses Prolog to query a knowledge base of cafes.
