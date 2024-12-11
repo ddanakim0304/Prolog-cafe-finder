@@ -124,10 +124,10 @@ def ask_user():
     while True:
         try:
             visit_start = int(input("Enter your arrival time (24-hour format, ex. 13 for 1 PM): "))
-            if 0 <= visit_start <= 48:  # Accommodate extended hours if needed
+            if 0 <= visit_start <= 24:
                 break
             else:
-                raise ValueError("Time must be between 0 and 48.")
+                raise ValueError("Time must be between 0 and 24.")
         except ValueError as e:
             print(f"Invalid input: {e}")
 
