@@ -189,11 +189,11 @@ def display_results(results, transport):
                 walk_time_result = list(prolog.query(walk_time_query))
                 if walk_time_result:
                     walk_time = walk_time_result[0]["WalkTime"]
-                    print(f"{idx}. 🌟 {name} at {address} is within walking distance. It takes approximately {walk_time} minutes on foot!")
+                    print(f"{idx}. {name} at {address} is within walking distance. It takes approximately {walk_time} minutes on foot!")
                 else:
-                    print(f"{idx}. 🌟 {name} at {address} is within walking distance, but the walking time is unknown!")
+                    print(f"{idx}. {name} at {address} is within walking distance, but the walking time is unknown!")
             else:
-                print(f"{idx}. 🌟 {name} at {address} can be reached by {transport} in approximately {transport_time} minutes!")
+                print(f"{idx}. {name} at {address} can be reached by {transport} in approximately {transport_time} minutes!")
 
     else:
         print("\nNo suitable cafes found based on your preferences :(")
