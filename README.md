@@ -15,8 +15,8 @@ flowchart LR
     D -->|Over Time Limit| F[Not Suitable]
     E -->|Within Budget| G{WiFi & Sockets?}
     E -->|Over Budget| F
-    G -->|Available| H{Dietary Options?}
-    G -->|Not Available| F
+    G -->|Matches| H{Dietary Options?}
+    G -->|Mo Match| F
     H -->|Matches| I{Meal Service?}
     H -->|No Match| F
     I -->|Available| J{Opening Hours?}
