@@ -59,7 +59,7 @@ def generate_cafes_prolog_file(cafe_data, output_file="cafes.pl"):
         file.write("    % Check vegan/vegetarian preferences\n")
         file.write("    vegan_options(Cafe, Options),\n")
         file.write("    (VeganPreference = vegan -> member('vegan', Options);\n")
-        file.write("     VeganPreference = vegetarian -> (member('vegetarian', Options); member('vegan', Options));\n")
+        file.write("     VeganPreference = vegetarian -> (member('vegetarian', Options));\n")
         file.write("     VeganPreference = none -> true),\n")
         file.write("\n")
         file.write("    % Check meals requirement\n")
