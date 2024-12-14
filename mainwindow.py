@@ -672,13 +672,18 @@ class Ui_MainWindow(object):
         try:
             if text.strip().lower() == "any":
                 self.priceVar = "any"
+                self.label_6.setText("pesos")  # Reset the message
             else:
                 price = float(text)
-                if price < 2000:  # Assuming 2000 is the minimum price in Prolog
-                    print("Price must be at least 2000 pesos.")
+                if price < 2000:
+                    self.label_6.setText("Min 2000 pesos")  # Show error in GUI
                     self.priceVar = 'any'
                 else:
                     self.priceVar = int(price)
+                    self.label_6.setText("pesos")  # Reset the message
+            self.getCafes()
+        except ValueError:
+            self.priceVar = "any"
             self.getCafes()
         except ValueError:
             print("Invalid price input. Please enter a numerical value or 'any'.")

@@ -81,11 +81,15 @@ def generate_cafes_prolog_file(cafe_data, output_file="cafes.pl"):
         file.write(
             "     price_range(Cafe, MinPrice,_), MaxPrice >= MinPrice),\n"
         )
+        
         file.write("\n")
         file.write("    % Check wifi and sockets\n")
-        file.write("    (Wifi = any -> true; wifi(Cafe, Wifi)),\n")
-        file.write("    (Sockets = any -> true; sockets(Cafe, Sockets)),\n")
+        file.write("    (Wifi = any -> true; \n")
+        file.write("     (Wifi = 'no' -> true; wifi(Cafe, Wifi))),\n")
+        file.write("    (Sockets = any -> true; \n")
+        file.write("     (Sockets = 'no' -> true; sockets(Cafe, Sockets))),\n")
         file.write("\n")
+
         file.write("    % Check vegan/vegetarian preferences\n")
         file.write("    vegan_options(Cafe, Options),\n")
         file.write("    (VeganPreference = any -> true;\n")
