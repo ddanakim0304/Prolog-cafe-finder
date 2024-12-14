@@ -9,6 +9,7 @@ generate_cafes_prolog_file(cafe_data)
 prolog = Prolog()
 prolog.consult("cafes.pl")
 
+
 def ask_user():
     """
     Displays a menu to collect user preferences for finding a suitable cafe.
@@ -46,13 +47,16 @@ def ask_user():
 
     while True:
         try:
-            max_time = int(input(f"What is the maximum travel time by {user_transport_labels[transport_choice]} (in minutes)? "))
+            max_time = int(
+                input(
+                    f"What is the maximum travel time by {user_transport_labels[transport_choice]} (in minutes)? "
+                )
+            )
             if max_time < 0:
                 raise ValueError("Time must be non-negative.")
             break
         except ValueError as e:
             print(f"Invalid input: {e}")
-
 
     while True:
         try:
@@ -109,7 +113,15 @@ def ask_user():
         except (ValueError, IndexError):
             print("Invalid input. Please enter 1 or 2.")
 
-    days = ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"]
+    days = [
+        "monday",
+        "tuesday",
+        "wednesday",
+        "thursday",
+        "friday",
+        "saturday",
+        "sunday",
+    ]
     print("What day of the week are you visiting?")
     for i, day in enumerate(days, 1):
         print(f"{i}. {day.capitalize()}")
@@ -123,7 +135,9 @@ def ask_user():
 
     while True:
         try:
-            visit_start = int(input("Enter your arrival time (24-hour format, ex. 13 for 1 PM): "))
+            visit_start = int(
+                input("Enter your arrival time (24-hour format, ex. 13 for 1 PM): ")
+            )
             if 0 <= visit_start <= 24:
                 break
             else:
@@ -133,7 +147,11 @@ def ask_user():
 
     while True:
         try:
-            visit_end = int(input("Enter your departure time (24-hour format, ex. 15 for 3 PM, or 26 for 2 AM the next day): "))
+            visit_end = int(
+                input(
+                    "Enter your departure time (24-hour format, ex. 15 for 3 PM, or 26 for 2 AM the next day): "
+                )
+            )
             if 0 <= visit_end <= 48 and (visit_end >= visit_start or visit_end <= 24):
                 break
             else:
@@ -141,10 +159,32 @@ def ask_user():
         except ValueError as e:
             print(f"Invalid input: {e}")
 
-    return transport, max_time, max_price, wifi, sockets, vegan_preference, needs_meals, visit_day, visit_start, visit_end
+    return (
+        transport,
+        max_time,
+        max_price,
+        wifi,
+        sockets,
+        vegan_preference,
+        needs_meals,
+        visit_day,
+        visit_start,
+        visit_end,
+    )
 
 
-def find_cafe(transport, max_time, max_price, wifi, sockets, vegan_preference, needs_meals, visit_day, visit_start, visit_end):
+def find_cafe(
+    transport,
+    max_time,
+    max_price,
+    wifi,
+    sockets,
+    vegan_preference,
+    needs_meals,
+    visit_day,
+    visit_start,
+    visit_end,
+):
     try:
         query = (
             f"suitable_cafe(Cafe, '{transport}', {max_time}, {max_price}, '{wifi}', '{sockets}', "
@@ -189,14 +229,21 @@ def display_results(results, transport):
                 walk_time_result = list(prolog.query(walk_time_query))
                 if walk_time_result:
                     walk_time = walk_time_result[0]["WalkTime"]
-                    print(f"{idx}. {name} at {address} is within walking distance. It takes approximately {walk_time} minutes on foot!")
+                    print(
+                        f"{idx}. {name} at {address} is within walking distance. It takes approximately {walk_time} minutes on foot!"
+                    )
                 else:
-                    print(f"{idx}. {name} at {address} is within walking distance, but the walking time is unknown!")
+                    print(
+                        f"{idx}. {name} at {address} is within walking distance, but the walking time is unknown!"
+                    )
             else:
-                print(f"{idx}. {name} at {address} can be reached by {transport} in approximately {transport_time} minutes!")
+                print(
+                    f"{idx}. {name} at {address} can be reached by {transport} in approximately {transport_time} minutes!"
+                )
 
     else:
         print("\nNo suitable cafes found based on your preferences :(")
+
 
 if __name__ == "__main__":
     try:

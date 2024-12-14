@@ -370,23 +370,6 @@ close_hour('Coffee_Hábito', [19,19,19,19,19,18]).
 close_hour('Tónico_Café', [19.5,19.5,19.5,19.5,19.5,19.5]).
 close_hour('Starbucks_Coffee', [21,21,21,21,21,21,21]).
 
-
-% Comprehensive cafe query predicate
-% cafe_query(CafeName, Address, PublicTransportTime, WalkTime, TaxiTime, MinPrice, MaxPrice, Wifi, Sockets, VeganOptions, OpeningHours, VisitDay).
-cafe_query(Cafe, Address, PTTime, WalkTime, TaxiTime, MinPrice, MaxPrice, Wifi, Sockets, VeganOptions, MealOption, DaysOpened, ClosingHours, OpeningHours, VisitDay) :-
-    address(Cafe, Address),
-    public_transport_time(Cafe, PTTime),
-    walk_time(Cafe, WalkTime),
-    taxi_time(Cafe, TaxiTime),
-    price_range(Cafe, MinPrice, MaxPriceRange), MaxPrice >= MinPrice, MaxPrice =< MaxPriceRange,
-    wifi(Cafe, Wifi),
-    sockets(Cafe, Sockets),
-    vegan_options(Cafe, VeganOptions),
-    meals(Cafe, MealOption),
-    days_opened(Cafe, DaysOpened), member(VisitDay, DaysOpened),
-    close_hour(Cafe, ClosingHours),
-    open_hour(Cafe, OpeningHours).
-
 % Rules
 suitable_cafe(Cafe, Transport, MaxTime, MaxPrice, Wifi, Sockets, VeganPreference, NeedsMeals, VisitDay, VisitStart, VisitEnd) :-
     % Check transport/time constraints
