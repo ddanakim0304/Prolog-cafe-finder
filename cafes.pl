@@ -370,48 +370,37 @@ close_hour('Coffee_Hábito', [19,19,19,19,19,18]).
 close_hour('Tónico_Café', [19.5,19.5,19.5,19.5,19.5,19.5]).
 close_hour('Starbucks_Coffee', [21,21,21,21,21,21,21]).
 
-
-% Comprehensive cafe query predicate
-% cafe_query(CafeName, Address, PublicTransportTime, WalkTime, TaxiTime, MinPrice, MaxPrice, Wifi, Sockets, VeganOptions, OpeningHours, VisitDay).
-cafe_query(Cafe, Address, PTTime, WalkTime, TaxiTime, MinPrice, MaxPrice, Wifi, Sockets, VeganOptions, MealOption, DaysOpened, ClosingHours, OpeningHours, VisitDay) :-
-    address(Cafe, Address),
-    public_transport_time(Cafe, PTTime),
-    walk_time(Cafe, WalkTime),
-    taxi_time(Cafe, TaxiTime),
-    price_range(Cafe, MinPrice, MaxPriceRange), MaxPrice >= MinPrice, MaxPrice =< MaxPriceRange,
-    wifi(Cafe, Wifi),
-    sockets(Cafe, Sockets),
-    vegan_options(Cafe, VeganOptions),
-    meals(Cafe, MealOption),
-    days_opened(Cafe, DaysOpened), member(VisitDay, DaysOpened),
-    close_hour(Cafe, ClosingHours),
-    open_hour(Cafe, OpeningHours).
-
 % Rules
 suitable_cafe(Cafe, Transport, MaxTime, MaxPrice, Wifi, Sockets, VeganPreference, NeedsMeals, VisitDay, VisitStart, VisitEnd) :-
     % Check transport/time constraints
-    (Transport = walk -> walk_time(Cafe, WT), WT =< MaxTime;
-     Transport = public_transport -> public_transport_time(Cafe, PT), (PT =< MaxTime ; PT = -1);
-     Transport = taxi -> taxi_time(Cafe, TT), (TT =< MaxTime ; TT = -1)),
+    (Transport = any -> true;
+     (Transport = walk -> walk_time(Cafe, WT), WT =< MaxTime;
+      Transport = public_transport -> public_transport_time(Cafe, PT), (PT =< MaxTime ; PT = -1);
+      Transport = taxi -> taxi_time(Cafe, TT), (TT =< MaxTime ; TT = -1))),
 
     % Check price range
-    price_range(Cafe, MinPrice, MaxPriceRange), MaxPrice >= MinPrice, MaxPrice =< MaxPriceRange,
+    (MaxPrice = any -> true;
+     price_range(Cafe, MinPrice, MaxPriceRange), MaxPrice >= MinPrice, MaxPrice =< MaxPriceRange),
 
     % Check wifi and sockets
-    (Wifi = 'no' -> true; wifi(Cafe, Wifi)),
-    (Sockets = 'no' -> true; sockets(Cafe, Sockets)),
+    (Wifi = any -> true; wifi(Cafe, Wifi)),
+    (Sockets = any -> true; sockets(Cafe, Sockets)),
 
     % Check vegan/vegetarian preferences
     vegan_options(Cafe, Options),
-    (VeganPreference = vegan -> member('vegan', Options);
-     VeganPreference = vegetarian -> (member('vegetarian', Options); member('vegan', Options));
+    (VeganPreference = any -> true;
+     VeganPreference = vegan -> member('vegan', Options);
+     VeganPreference = vegetarian -> member('vegetarian', Options);
      VeganPreference = none -> true),
 
     % Check meals requirement
-    (NeedsMeals = yes -> meals(Cafe, yes); true),
+    (NeedsMeals = any -> true;
+     (NeedsMeals = yes -> meals(Cafe, yes); true)),
 
     % Check day and hours
-    days_opened(Cafe, Days), member(VisitDay, Days),
-    open_hour(Cafe, OpenHours), nth0(DayIndex, Days, VisitDay), nth0(DayIndex, OpenHours, Open),
-    close_hour(Cafe, CloseHours), nth0(DayIndex, CloseHours, Close),
-    VisitStart >= Open, VisitEnd =< Close.
+    (VisitDay = any -> true;
+     days_opened(Cafe, Days), member(VisitDay, Days),
+     open_hour(Cafe, OpenHours), nth0(DayIndex, Days, VisitDay), nth0(DayIndex, OpenHours, Open),
+     close_hour(Cafe, CloseHours), nth0(DayIndex, CloseHours, Close),
+     (VisitStart = any -> true; VisitStart >= Open),
+     (VisitEnd = any -> true; VisitEnd =< Close)).

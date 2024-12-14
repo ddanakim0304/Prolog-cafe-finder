@@ -61,67 +61,48 @@ def generate_cafes_prolog_file(cafe_data, output_file="cafes.pl"):
         for predicate, facts in predicates.items():
             file.write("\n".join(facts) + "\n\n")
 
-        # After writing all the facts, add the cafe_query predicate
-        file.write("\n% Comprehensive cafe query predicate\n")
-        file.write(
-            "% cafe_query(CafeName, Address, PublicTransportTime, WalkTime, TaxiTime, MinPrice, MaxPrice, Wifi, Sockets, VeganOptions, OpeningHours, VisitDay).\n"
-        )
-        file.write(
-            "cafe_query(Cafe, Address, PTTime, WalkTime, TaxiTime, MinPrice, MaxPrice, Wifi, Sockets, VeganOptions, MealOption, DaysOpened, ClosingHours, OpeningHours, VisitDay) :-\n"
-        )
-        file.write("    address(Cafe, Address),\n")
-        file.write("    public_transport_time(Cafe, PTTime),\n")
-        file.write("    walk_time(Cafe, WalkTime),\n")
-        file.write("    taxi_time(Cafe, TaxiTime),\n")
-        file.write(
-            "    price_range(Cafe, MinPrice, MaxPriceRange), MaxPrice >= MinPrice, MaxPrice =< MaxPriceRange,\n"
-        )
-        file.write("    wifi(Cafe, Wifi),\n")
-        file.write("    sockets(Cafe, Sockets),\n")
-        file.write("    vegan_options(Cafe, VeganOptions),\n")
-        file.write("    meals(Cafe, MealOption),\n")
-        file.write("    days_opened(Cafe, DaysOpened), member(VisitDay, DaysOpened),\n")
-        file.write("    close_hour(Cafe, ClosingHours),\n")
-        file.write("    open_hour(Cafe, OpeningHours).\n\n")
-
-        # Then write the existing suitable_cafe rule
+        # Write rules with default "any" handling
         file.write("% Rules\n")
         file.write(
             "suitable_cafe(Cafe, Transport, MaxTime, MaxPrice, Wifi, Sockets, VeganPreference, NeedsMeals, VisitDay, VisitStart, VisitEnd) :-\n"
         )
         file.write("    % Check transport/time constraints\n")
-        file.write("    (Transport = walk -> walk_time(Cafe, WT), WT =< MaxTime;\n")
+        file.write("    (Transport = any -> true;\n")
+        file.write("     (Transport = walk -> walk_time(Cafe, WT), WT =< MaxTime;\n")
         file.write(
-            "     Transport = public_transport -> public_transport_time(Cafe, PT), (PT =< MaxTime ; PT = -1);\n"
+            "      Transport = public_transport -> public_transport_time(Cafe, PT), (PT =< MaxTime ; PT = -1);\n"
         )
         file.write(
-            "     Transport = taxi -> taxi_time(Cafe, TT), (TT =< MaxTime ; TT = -1)),\n"
+            "      Transport = taxi -> taxi_time(Cafe, TT), (TT =< MaxTime ; TT = -1))),\n"
         )
         file.write("\n")
         file.write("    % Check price range\n")
+        file.write("    (MaxPrice = any -> true;\n")
         file.write(
-            "    price_range(Cafe, MinPrice, MaxPriceRange), MaxPrice >= MinPrice, MaxPrice =< MaxPriceRange,\n"
+            "     price_range(Cafe, MinPrice, MaxPriceRange), MaxPrice >= MinPrice, MaxPrice =< MaxPriceRange),\n"
         )
         file.write("\n")
         file.write("    % Check wifi and sockets\n")
-        file.write("    (Wifi = 'no' -> true; wifi(Cafe, Wifi)),\n")
-        file.write("    (Sockets = 'no' -> true; sockets(Cafe, Sockets)),\n")
+        file.write("    (Wifi = any -> true; wifi(Cafe, Wifi)),\n")
+        file.write("    (Sockets = any -> true; sockets(Cafe, Sockets)),\n")
         file.write("\n")
         file.write("    % Check vegan/vegetarian preferences\n")
         file.write("    vegan_options(Cafe, Options),\n")
-        file.write("    (VeganPreference = vegan -> member('vegan', Options);\n")
-        file.write("     VeganPreference = vegetarian -> member('vegetarian', Options);\n")
+        file.write("    (VeganPreference = any -> true;\n")
+        file.write("     VeganPreference = vegan -> member('vegan', Options);\n")
+        file.write(
+            "     VeganPreference = vegetarian -> member('vegetarian', Options);\n"
+        )
         file.write("     VeganPreference = none -> true),\n")
         file.write("\n")
         file.write("    % Check meals requirement\n")
-        file.write("    (NeedsMeals = yes -> meals(Cafe, yes); true),\n")
+        file.write("    (NeedsMeals = any -> true;\n")
+        file.write("     (NeedsMeals = yes -> meals(Cafe, yes); true)),\n")
         file.write("\n")
         file.write("    % Check day and hours\n")
-        file.write("    days_opened(Cafe, Days), member(VisitDay, Days),\n")
-        file.write(
-            "    open_hour(Cafe, OpenHours), nth0(DayIndex, Days, VisitDay), nth0(DayIndex, OpenHours, Open),\n"
-        )
-        file.write(
-            "    close_hour(Cafe, CloseHours), nth0(DayIndex, CloseHours, Close),\n"
-        )
-        file.write("    VisitStart >= Open, VisitEnd =< Close.\n")
+        file.write("    (VisitDay = any -> true;\n")
+        file.write("     days_opened(Cafe, Days), member(VisitDay, Days),\n")
+        file.write("     open_hour(Cafe, OpenHours), nth0(DayIndex, Days, VisitDay), nth0(DayIndex, OpenHours, Open),\n")
+        file.write("     close_hour(Cafe, CloseHours), nth0(DayIndex, CloseHours, Close),\n")
+        file.write("     (VisitStart = any -> true; VisitStart >= Open),\n")
+        file.write("     (VisitEnd = any -> true; VisitEnd =< Close)).\n")
