@@ -1,7 +1,5 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 from pyswip import Prolog
-from generate_list import generate_cafes_prolog_file
-from cafe_data import cafe_data
 
 # Initialize Prolog interface
 prolog = Prolog()
@@ -575,6 +573,7 @@ class Ui_MainWindow(object):
                 Cafes
             )."""
             
+            print("Prolog Query for Suitable Cafes (Open Days):", query)  # Debug
             result = list(prolog.query(query))
             
             if result:
@@ -677,7 +676,7 @@ class Ui_MainWindow(object):
                 price = float(text)
                 if price < 2000:  # Assuming 2000 is the minimum price in Prolog
                     print("Price must be at least 2000 pesos.")
-                    self.priceVar = 2000
+                    self.priceVar = 'any'
                 else:
                     self.priceVar = int(price)
             self.getCafes()
