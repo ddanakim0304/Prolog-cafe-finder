@@ -79,7 +79,7 @@ def generate_cafes_prolog_file(cafe_data, output_file="cafes.pl"):
         file.write("    % Check price range\n")
         file.write("    (MaxPrice = any -> true;\n")
         file.write(
-            "     price_range(Cafe, MinPrice, MaxPriceRange), MaxPrice >= MinPrice, MaxPrice =< MaxPriceRange),\n"
+            "     price_range(Cafe, MinPrice,_), MaxPrice >= MinPrice),\n"
         )
         file.write("\n")
         file.write("    % Check wifi and sockets\n")

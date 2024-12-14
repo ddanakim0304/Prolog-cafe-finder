@@ -380,7 +380,7 @@ suitable_cafe(Cafe, Transport, MaxTime, MaxPrice, Wifi, Sockets, VeganPreference
 
     % Check price range
     (MaxPrice = any -> true;
-     price_range(Cafe, MinPrice, MaxPriceRange), MaxPrice >= MinPrice, MaxPrice =< MaxPriceRange),
+     price_range(Cafe, MinPrice,_), MaxPrice >= MinPrice),
 
     % Check wifi and sockets
     (Wifi = any -> true; wifi(Cafe, Wifi)),
