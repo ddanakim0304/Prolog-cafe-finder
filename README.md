@@ -5,34 +5,40 @@
 
 ## Algorithm Visualization
 ```mermaid
-flowchart LR
-    %% WiFi Check
-    B[Collect User Preferences] --> C[Check WiFi Requirement]
+flowchart TD
+    A[Collect User Preferences] --> B[Check Preferred Transport and Max Transport Time]
+    B --> |User Input = Taxi or Public Transport| B1[Check if the cafe is within walkable distance]
+    B1 --> |If Walktime <= 10| C
+    B1 --> |If Walktime > 10| B3[Selected Transport Time <= Max Transport Time]
+    B3 --> |Pass| C
+    B3 --> |Fail| Z
+    B --> |User Input = Walk| B2[Walk Time <= Max Transport Time]
+    B2 --> C
+    
+    C[Check WiFi Requirement]
     C -->|User Input = no| D[Check Socket Requirement]
     C -->|User Input = yes| C2[Verify Wifi = yes]
     C2 -->|Pass| D
     C2 -->|Fail| Z[Reject Cafe]
 
     %% Socket Check
-    D -->|User Input = no| F[Check Dietary Preferences]
+    D -->|User Input = no| G[Check Dietary Preferences]
     D -->|User Input = yes| E2[Verify Socket = yes]
-    E2 -->|Pass| F
+    E2 -->|Pass| G
     E2 -->|Fail| Z
 
     %% Dietary Check
-    F --> G[Check Dietary Preferences]
     G -->|User Input = none| H[Check Meals Requirement]
     G -->|User Input = vegan| G2[Verify vegan options include vegan]
-    G -->|User Input = vegetarian| G3[Verify vegan options include vegetarian or vegan]
+    G -->|User Input = vegetarian| G3[Verify vegan options include vegetarian]
     G2 -->|Pass| H
     G2 -->|Fail| Z
     G3 -->|Pass| H
     G3 -->|Fail| Z
 
     %% Meals Requirement
-    H -->|User Input = no| I1[Skip Meals Check]
+    H -->|User Input = no| J[Check Day and Time Availability]
     H -->|User Input = yes| I2[Verify meals = yes]
-    I1 --> J[Check Day and Time Availability]
     I2 -->|Pass| J
     I2 -->|Fail| Z
 
@@ -42,7 +48,6 @@ flowchart LR
     K2 -->|Pass| L[Add to result]
     K2 -->|Fail| Z
     K1 -->|Fail| Z
-
 ```
 
 
